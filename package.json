@@ -1,0 +1,36 @@
+{
+	"name": "mcafs",
+	"description": "一个用于访问 .minecraft/assets 目录的 FTP 服务器",
+	"keywords": [
+		"minecraft",
+		"minecraft assets",
+		"ftp",
+		"ftpd",
+		"ftp-server"
+	],
+	"files": [
+		"mcafs.js"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/LEAWIND/mcafs"
+	},
+	"version": "1.0.0",
+	"main": "mcafs.js",
+	"bin": {
+		"mcafs": "./mcafs.js"
+	},
+	"directories": {
+		"test": "test"
+	},
+	"scripts": {
+		"start": "node mcafs.js"
+	},
+	"author": "LEAWIND",
+	"license": "MIT",
+	"dependencies": {
+		"commander": "^11.0.0",
+		"log4js": "^6.9.1",
+		"ftp-srv": "^4.6.2"
+	}
+}
