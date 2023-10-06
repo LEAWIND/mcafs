@@ -15,7 +15,7 @@
 		"type": "git",
 		"url": "https://github.com/LEAWIND/mcafs"
 	},
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"main": "mcafs.js",
 	"bin": {
 		"mcafs": "./mcafs.js"
@@ -29,8 +29,12 @@
 	"author": "LEAWIND",
 	"license": "MIT",
 	"dependencies": {
+		"charenc": "^0.0.2",
 		"commander": "^11.0.0",
+		"crypt": "^0.0.2",
+		"ftp-srv": "^4.6.2",
+		"is-buffer": "^1.1.6",
 		"log4js": "^6.9.1",
-		"ftp-srv": "^4.6.2"
+		"uuid": "^3.4.0"
 	}
 }
