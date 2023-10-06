@@ -10,6 +10,7 @@ const { FtpSrv, FileSystem } = require('ftp-srv');
 const errors = require('ftp-srv/src/errors');
 const { program, Option } = require("commander");
 
+const logger = log4js.getLogger("MCAFS");
 
 function defineProgram() {
 	program
@@ -20,6 +21,8 @@ function defineProgram() {
 		.addHelpText('afterAll', "推荐使用的FTP客户端：FileZilla");
 	program
 		.option('-d --assetsDir <assetsDir>', '.minecraft/assets 目录路径', MinecraftAssetsFileSystem.getDefaultRoot())
+		.option('-u --url <url>', 'URL，例如ftp://0.0.0.0:2023。若指定了此项，则addr和port选项将被忽略')
+		.option('-a --addr <addr>', 'IP 地址', '127.0.0.1')
 		.option('-p --port <port>', 'FTP 端口号', 21)
 		.addOption(new Option('-l --logLevel <logLevel>', '日志级别').choices(['all', 'trace', 'debug', 'info', 'warn', 'error', 'fatal', 'mark', 'off']).default('info'));
 	program.parse();
@@ -224,6 +227,7 @@ class MinecraftAssetsFileSystem extends FileSystem {
 			const indexVdir = this.#vfs.makeDir(indexFileBaseName);
 			// for objects in index file
 			for (let vpath in this.#indexes[indexFileBaseName].objects) {
+				logger.trace(`Loading index ${indexFileName}`);
 				const vfile = new VirtualFile({}, this.#indexes[indexFileBaseName].objects[vpath]);
 				indexVdir.makeFile(vpath, vfile);
 			}
@@ -413,14 +417,22 @@ class MinecraftAssetsFileSystem extends FileSystem {
 	opts.assetsDir = opts.assetsDir.trim();
 	opts.port = ~~opts.port;
 
-	const logger = log4js.getLogger("MCAFS");
+	if (opts.url) {
+		opts.url = opts.url.trim();
+		if (!/.*\/\/.*/.test(opts.url)) {
+			opts.url = `ftp://${opts.url}`;
+		}
+		const url = new URL(opts.url);
+		opts.port = url.port;
+		opts.addr = url.hostname;
+	}
+
 	logger.level = opts.logLevel;
 
 	logger.info(`Minecraft Assets Directory: ${opts.assetsDir}`);
 
-
 	const ftpServer = new FtpSrv({
-		url: `ftp://localhost:${opts.port}`,
+		url: `ftp://${opts.addr}:${opts.port}`,
 		pasv_min: 1024,
 		pasv_max: 65535,
 		tls: false,
@@ -453,6 +465,6 @@ class MinecraftAssetsFileSystem extends FileSystem {
 
 	// 开始监听端口
 	ftpServer.listen().then(() => {
-		logger.info(`FTP Server is starting at ftp://localhost:${opts.port}/`);
+		logger.info(`FTP Server is starting at ftp://${opts.addr}:${opts.port}/`);
 	});
 })();
