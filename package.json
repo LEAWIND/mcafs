@@ -29,12 +29,13 @@
 	"author": "LEAWIND",
 	"license": "MIT",
 	"dependencies": {
+		"bunyan": "^1.8.12",
 		"charenc": "^0.0.2",
 		"commander": "^11.0.0",
 		"crypt": "^0.0.2",
 		"ftp-srv": "^4.6.2",
 		"is-buffer": "^1.1.6",
 		"log4js": "^6.9.1",
-		"uuid": "^3.4.0"
+		"uuid": "^3.2.1"
 	}
 }
