@@ -86,7 +86,7 @@ export class MinecraftAssetsFileSystem {
 	private currentVpath;
 
 	// 索引
-	private indices: Record<string, IndexJson>;
+	private indices: Record<string, IndexJson> = {};
 
 	private cannotWrite = true;
 	/**
@@ -104,28 +104,20 @@ export class MinecraftAssetsFileSystem {
 		/**
 		 * 加载索引文件，生成虚拟文件系统
 		 */
-		this.indices = {};
 		for (const indexFileName of fs.readdirSync(this.indicesRealDir)) {
 			if (path.extname(indexFileName) === ".json") {
 				const indexFileBaseName = path.basename(indexFileName, path.extname(indexFileName));
 				const indexFileRealPath = path.join(this.indicesRealDir, indexFileName);
 				const index: IndexJson = JSON.parse(fs.readFileSync(indexFileRealPath, 'utf-8')) as IndexJson;
 				this.indices[indexFileBaseName] = index;
+
 				// 索引对应的虚拟目录
 				const indexVdir = this.vfs.makeDir(indexFileBaseName);
-				// 遍历索引文件，生成虚拟文件
-				for (let vpath in index.objects) {
-					logger.trace(`Loading index ${indexFileName}`);
-					const obj: IndexdObject = index.objects[vpath];
-					const vfile = new VirtualFile(obj.hash, obj.size);
-					indexVdir.makeFile(vpath, vfile);
-				}
+				MinecraftAssetsFileSystem.loadIndexFile(index, indexVdir);
 			}
 		}
 		logger.trace(`Indices are build.`);
 	}
-
-
 
 	public get indicesRealDir() {
 		return path.join(this.assetsDir, 'indexes');
@@ -229,6 +221,22 @@ export class MinecraftAssetsFileSystem {
 			return path.win32.join(process.env.APPDATA!, '.minecraft/assets');
 		} else {
 			return path.posix.join(os.homedir(), '.minecraft/assets');
+		}
+	}
+	/**
+	 * 加载索引文件到指定的虚拟目录
+	 * 
+	 * @param index 索引
+	 * @param vdir 虚拟目录
+	 * @param [overwrite=true] 是否覆盖虚拟目录中已存在的文件
+	 */
+	public static loadIndexFile(index: IndexJson, vdir: VirtualDirectory, overwrite: boolean = true): void {
+		for (let vpath in index.objects) {
+			const obj: IndexdObject = index.objects[vpath];
+			const vfile = new VirtualFile(obj.hash, obj.size);
+			if (overwrite || !vdir.hasFile(vpath)) {
+				vdir.makeFile(vpath, vfile);
+			}
 		}
 	}
 }
