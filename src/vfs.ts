@@ -164,12 +164,14 @@ export class VirtualDirectory extends VirtualNode {
 	}
 	/**
 	 * 递归创建子文件
+	 * 
+	 * 如果文件已经存在，则覆盖，返回被覆盖的旧文件
+	 * TODO overwrite
 	 */
-	makeFile(vpath: string, vfile: VirtualFile) {
+	makeFile(vpath: string, vfile: VirtualFile): VirtualFile | null {
 		const { dir, base } = path.posix.parse(vpath);
 		const parentDir = dir ? this.makeDir(dir) : this;
-		parentDir._makeFile(base, vfile);
-		return vfile;
+		return parentDir._makeFile(base, vfile);
 	}
 	/**
 	 * 获取子节点列表
