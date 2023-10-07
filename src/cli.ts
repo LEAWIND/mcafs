@@ -4,7 +4,7 @@ import { program, Option } from 'commander';
 import { FtpSrv } from 'ftp-srv';
 import log4js from "log4js";
 
-import { MinecraftAssetsFileSystem } from './core';
+import { MinecraftAssetsFileSystem } from './mcafs';
 
 
 const logger = log4js.getLogger("MCAFS");
