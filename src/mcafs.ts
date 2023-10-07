@@ -1,11 +1,7 @@
-#!/usr/bin/env node
-
 import os from 'os';
 import fs from "fs";
 import log4js from "log4js";
 import path from "path";
-
-import { FileSystem } from 'ftp-srv';
 
 import { VirtualNode, VirtualDirectory, VirtualFile } from './vfs';
 import { IndexdObject, IndexJson } from './assets_types';
@@ -81,7 +77,7 @@ export class McafsStats implements fs.StatsBase<number> {
 /**
  * MC 资产文件系统
  */
-export class MinecraftAssetsFileSystem extends FileSystem {
+export class MinecraftAssetsFileSystem {
 	// 虚拟文件系统根目录
 	private vfs: VirtualDirectory;
 	// 当前虚拟目录
@@ -92,13 +88,11 @@ export class MinecraftAssetsFileSystem extends FileSystem {
 	// 索引
 	private indices: Record<string, IndexJson>;
 
-	constructor(
-		connection: any,
-		private assetsDir: string,
-		private cannotWrite = true,
-	) {
-		super(connection, { root: '', cwd: '' });
-
+	private cannotWrite = true;
+	/**
+	 * @param assetsDir 资产目录
+	 */
+	constructor(private assetsDir: string) {
 		if (!(fs.existsSync(assetsDir) && fs.statSync(assetsDir).isDirectory())) {
 			throw new Error(`Assets directory does not exist: ${assetsDir}`);
 		}
@@ -130,6 +124,7 @@ export class MinecraftAssetsFileSystem extends FileSystem {
 		}
 		logger.trace(`Indices are build.`);
 	}
+
 
 
 	public get indicesRealDir() {
@@ -226,61 +221,6 @@ export class MinecraftAssetsFileSystem extends FileSystem {
 			throw new Error(`Not a file at ${vpath}: ${vfile}`);
 		}
 	}
-	/**
-	 * Returns a writable stream
-	 * Options:
-	 * append if true, append to existing file
-	 * start if set, specifies the byte offset to write to
-	 * Used in: STOR, APPE
-	 */
-	public async write(fileName: string, { append, start }: { append?: boolean, start?: number; }) {
-		const vpath = this.resolvePath(fileName);
-		if (this.cannotWrite)
-			throw new Error(`This file system is readonly`);
-	}
-
-	/**
-	 * Returns a path to a newly created directory
-	 * Used in: MKD
-	 */
-	public async mkdir(fname: string) { }
-
-	/**
-	 * Delete a file or directory
-	 * Used in: DELE
-	 */
-	public async delete(vpath: string) {
-		if (this.cannotWrite)
-			throw new Error(`This file system is readonly`);
-	}
-
-	/**
-	 * Renames a file or directory
-	 * Used in: RNFR, RNTO
-	 */
-	public async rename(from: string, to: string) {
-		if (this.cannotWrite)
-			throw new Error(`This file system is readonly`);
-	}
-
-	/**
-	 * Modifies a file or directory's permissions
-	 * Used in: SITE CHMOD
-	 */
-	public async chmod(vpath: string) {
-		if (this.cannotWrite)
-			throw new Error(`This file system is readonly`);
-	}
-
-	/**
-	 * Returns a unique file name to write to. Client requested filename available if you want to base your function on it.
-	 * Used in: STOU
-	 */
-	public getUniqueName(fileName: string): string {
-		console.warn("[mcafs]", "getUniqueName", fileName);
-		return fileName;
-	}
-
 	/**
 	 * 获取 .assets 目录的默认路径
 	 */

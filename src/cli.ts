@@ -5,6 +5,7 @@ import { FtpSrv } from 'ftp-srv';
 import log4js from "log4js";
 
 import { MinecraftAssetsFileSystem } from './mcafs';
+import { FrpSrvAdapter } from './frp-srv-adapter';
 
 
 const logger = log4js.getLogger("MCAFS");
@@ -48,6 +49,9 @@ logger.level = opts.logLevel as any;
 
 logger.info(`Minecraft Assets Directory: ${opts.assetsDir}`);
 
+
+const mcafs = new MinecraftAssetsFileSystem(opts.assetsDir);
+
 const ftpServer = new FtpSrv({
 	url: `ftp://${opts.addr}:${opts.port}`,
 	pasv_min: 1024,
@@ -60,8 +64,8 @@ const ftpServer = new FtpSrv({
 
 ftpServer.on('login', ({ connection, username, password }, resolve, reject) => {
 	logger.info(`Login  from ${connection.ip}`);
-	const mcafs = new MinecraftAssetsFileSystem(connection, opts.assetsDir);
-	return resolve({ fs: mcafs, root: '/', cwd: '/', });
+	const adapter = new FrpSrvAdapter(connection, mcafs);
+	return resolve({ fs: adapter, root: '/', cwd: '/', });
 	// return reject(new errors.GeneralError('Invalid username or password', 401));
 });
 ftpServer.on('disconnect', ({ connection, id }) => {
