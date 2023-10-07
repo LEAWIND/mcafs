@@ -1,41 +1,49 @@
 {
 	"name": "mcafs",
-	"description": "一个用于访问 .minecraft/assets 目录的 FTP 服务器",
+	"description": "A FTP server for accessing directory ~/.minecraft/assets",
 	"keywords": [
 		"minecraft",
-		"minecraft assets",
-		"ftp",
-		"ftpd",
-		"ftp-server"
+		"assets",
+		"ftp"
 	],
+	"type": "commonjs",
 	"files": [
-		"mcafs.js"
+		"dist/"
 	],
+	"directories": {
+		"test": "test"
+	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/LEAWIND/mcafs"
 	},
-	"version": "1.0.1",
-	"main": "mcafs.js",
+	"version": "1.1.0",
 	"bin": {
-		"mcafs": "./mcafs.js"
-	},
-	"directories": {
-		"test": "test"
+		"mcafs": "./dist/cli.js"
 	},
 	"scripts": {
-		"start": "node mcafs.js"
+		"dev": "tsc --watch",
+		"clean": "rimraf ./dist",
+		"build": "tsc",
+		"mcafs": "node dist/cli.js"
 	},
 	"author": "LEAWIND",
 	"license": "MIT",
 	"dependencies": {
+		"ftp-srv": "^4.6.3",
+		"uuid": "^8.3.2",
 		"bunyan": "^1.8.12",
 		"charenc": "^0.0.2",
-		"commander": "^11.0.0",
 		"crypt": "^0.0.2",
-		"ftp-srv": "^4.6.2",
 		"is-buffer": "^1.1.6",
 		"log4js": "^6.9.1",
-		"uuid": "^3.2.1"
+		"typescript": "^5.4.5",
+		"commander": "^11.0.0"
+	},
+	"devDependencies": {
+		"@types/node": "^18.19.0",
+		"@types/uuid": "^8.3.2",
+		"npm-run-all": "^4.1.5",
+		"rimraf": "^5.0.7"
 	}
 }

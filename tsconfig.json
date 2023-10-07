@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "CommonJS",
+		"moduleResolution": "Node",
+		"sourceMap": false,
+		"declaration": true,
+		"rootDir": "./src",
+		"outDir": "./dist",
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"skipLibCheck": false,
+		"resolveJsonModule": true,
+		"allowUnreachableCode": false,
+		"alwaysStrict": true,
+		"removeComments": false,
+		"inlineSourceMap": true,
+	},
+	"include": ["src/**/*"],
+}
