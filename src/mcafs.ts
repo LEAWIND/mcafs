@@ -222,7 +222,8 @@ export class MinecraftAssetsFileSystem {
 	 */
 	public static getDefaultRoot(): string {
 		if (os.type() === 'Windows_NT') {
-			return path.win32.join(process.env.APPDATA!, '.minecraft/assets');
+			const appDataDir: string = process.env.APPDATA || path.win32.join(os.homedir(), 'AppData/Roaming');
+			return path.win32.join(appDataDir, '.minecraft/assets');
 		} else {
 			return path.posix.join(os.homedir(), '.minecraft/assets');
 		}
