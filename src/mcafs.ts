@@ -51,7 +51,10 @@ export class McafsStats implements fs.StatsBase<number> {
 
 	private is_file: boolean = false;
 
-	constructor(stats: fs.Stats) {
+	constructor(
+		stats: fs.Stats,
+		public name: string,
+	) {
 		this.dev = stats.dev;
 		this.ino = stats.ino;
 		this.mode = stats.mode;
@@ -148,37 +151,38 @@ export class MinecraftAssetsFileSystem {
 		return this.currentVpath;
 	}
 	/**
-	 * Returns a file stat object of file or directory
-	 * Used in: LIST, NLST, STAT, SIZE, RNFR, MDTM
+	 * 获取文件 Stat
 	 */
 	public async get(fileName: string): Promise<fs.Stats> {
+		const { base } = path.parse(fileName);
 		const vpath = this.resolvePath(fileName);
 		const vfile = this.vfs.get(vpath);
 		let stats: fs.Stats;
 		if (vfile instanceof VirtualFile) {
-			stats = new McafsStats(fs.statSync(this.getRealPathOfHash(vfile.hash!)));
+			stats = new McafsStats(fs.statSync(this.getRealPathOfHash(vfile.hash!)), base);
 		} else if (vfile instanceof VirtualDirectory) {
-			stats = new McafsStats(fs.statSync(this.assetsDir));
+			stats = new McafsStats(fs.statSync(this.assetsDir), base);
 		} else {
 			throw new Error(`File not exists in vfs: ${vpath}`);
 		}
 		return stats;
 	}
 	/**
-	 * Returns array of file and directory stat objects
-	 * Used in: LIST, NLST, STAT
+	 * TODO 获取目录下的文件信息
+	 * 
+	 * @param pth 虚拟目录路径
 	 */
-	public async list(pth: string) {
+	public async list(pth: string): Promise<McafsStats[]> {
 		const vpath = this.resolvePath(pth);
 		const statList = this.vfs.getChildNodeList(vpath).map(child => {
-			const stat = child instanceof VirtualDirectory
+			const fstats = child instanceof VirtualDirectory
 				? fs.statSync(this.assetsDir)
 				: fs.statSync(this.getRealPathOfHash((child as VirtualFile).hash!));
-			(stat as any).name = (child as VirtualNode).name;
-			return stat;
+			return new McafsStats(fstats, child.name);
 		});
 		return statList;
 	}
+
 	/**
 	 * Returns new directory relative to current directory
 	 * Used in: CWD, CDUP
