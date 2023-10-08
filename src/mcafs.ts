@@ -165,15 +165,13 @@ export class MinecraftAssetsFileSystem {
 	}
 
 	/**
-	 * Returns a readable stream
-	 * Options:
-	 * start if set, specifies the byte offset to read from
-	 * Used in: RETR
+	 * 读取文件
+	 * 
+	 * @param vpath 虚拟文件路径
 	 */
 	public async read(vpath: string, { start }: { start?: number; }): Promise<{ stream: fs.ReadStream; vpath: string; }> {
 		const vfile = this.vfs.get(vpath);
 		if (vfile instanceof VirtualFile) {
-			// vfile.hash
 			const realPath = this.getRealPathOfHash(vfile.hash);
 			const stream = fs.createReadStream(realPath, { flags: 'r', start });
 			return { stream, vpath };
