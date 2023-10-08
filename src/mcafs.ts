@@ -139,11 +139,11 @@ export class MinecraftAssetsFileSystem {
 	/**
 	 * 虚拟路径：将相对路径解析为绝对路径
 	 */
-	private resolvePath(vpath: string): string {
-		if (vpath[0] === '/') {
-			return vpath;
+	private resolvePath(rvpath: string): string {
+		if (rvpath[0] === '/') {
+			return rvpath;
 		} else {
-			return path.posix.join(this.currentVpath, vpath);
+			return path.posix.join(this.currentVpath, rvpath);
 		}
 	}
 
@@ -153,9 +153,9 @@ export class MinecraftAssetsFileSystem {
 	/**
 	 * 获取文件 Stat
 	 */
-	public async get(fileName: string): Promise<fs.Stats> {
-		const { base } = path.parse(fileName);
-		const vpath = this.resolvePath(fileName);
+	public async get(rvpath: string): Promise<fs.Stats> {
+		const { base } = path.parse(rvpath);
+		const vpath = this.resolvePath(rvpath);
 		const vfile = this.vfs.get(vpath);
 		let stats: fs.Stats;
 		if (vfile instanceof VirtualFile) {
@@ -188,8 +188,8 @@ export class MinecraftAssetsFileSystem {
 	 * Returns new directory relative to current directory
 	 * Used in: CWD, CDUP
 	 */
-	public async chdir(fname: string = '.'): Promise<string> {
-		const vpath = this.resolvePath(fname);
+	public async chdir(rvpath: string = '.'): Promise<string> {
+		const vpath = this.resolvePath(rvpath);
 		const newVDir = this.vfs.get(vpath)!;
 		if (newVDir instanceof VirtualDirectory) {
 			this.currentVdir = newVDir;
@@ -205,8 +205,8 @@ export class MinecraftAssetsFileSystem {
 	 * start if set, specifies the byte offset to read from
 	 * Used in: RETR
 	 */
-	public async read(fileName: string, { start }: { start?: number; }): Promise<{ stream: fs.ReadStream; vpath: string; }> {
-		const vpath = this.resolvePath(fileName);
+	public async read(rvpath: string, { start }: { start?: number; }): Promise<{ stream: fs.ReadStream; vpath: string; }> {
+		const vpath = this.resolvePath(rvpath);
 		const vfile = this.vfs.get(vpath)!;
 		if (vfile instanceof VirtualFile) {
 			// vfile.hash
