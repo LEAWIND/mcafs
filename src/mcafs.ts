@@ -159,7 +159,7 @@ export class MinecraftAssetsFileSystem {
 		const vfile = this.vfs.get(vpath);
 		let stats: fs.Stats;
 		if (vfile instanceof VirtualFile) {
-			stats = new McafsStats(fs.statSync(this.getRealPathOfHash(vfile.hash!)), base);
+			stats = new McafsStats(fs.statSync(this.getRealPathOfHash(vfile.hash)), base);
 		} else if (vfile instanceof VirtualDirectory) {
 			stats = new McafsStats(fs.statSync(this.assetsDir), base);
 		} else {
@@ -178,7 +178,7 @@ export class MinecraftAssetsFileSystem {
 			.map(child => new McafsStats(
 				fs.statSync(child instanceof VirtualDirectory
 					? this.assetsDir
-					: this.getRealPathOfHash((child as VirtualFile).hash!)
+					: this.getRealPathOfHash((child as VirtualFile).hash)
 				),
 				child.name,
 			));
@@ -190,7 +190,7 @@ export class MinecraftAssetsFileSystem {
 	 */
 	public async chdir(rvpath: string = '.'): Promise<string> {
 		const vpath = this.resolvePath(rvpath);
-		const newVDir = this.vfs.get(vpath)!;
+		const newVDir = this.vfs.get(vpath);
 		if (newVDir instanceof VirtualDirectory) {
 			this.currentVdir = newVDir;
 			return this.currentVpath = vpath;
@@ -207,10 +207,10 @@ export class MinecraftAssetsFileSystem {
 	 */
 	public async read(rvpath: string, { start }: { start?: number; }): Promise<{ stream: fs.ReadStream; vpath: string; }> {
 		const vpath = this.resolvePath(rvpath);
-		const vfile = this.vfs.get(vpath)!;
+		const vfile = this.vfs.get(vpath);
 		if (vfile instanceof VirtualFile) {
 			// vfile.hash
-			const realPath = this.getRealPathOfHash(vfile.hash!);
+			const realPath = this.getRealPathOfHash(vfile.hash);
 			const stream = fs.createReadStream(realPath, { flags: 'r', start });
 			return { stream, vpath };
 		} else {
