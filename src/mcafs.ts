@@ -168,19 +168,20 @@ export class MinecraftAssetsFileSystem {
 		return stats;
 	}
 	/**
-	 * TODO 获取目录下的文件信息
+	 * 获取目录下的文件信息
 	 * 
-	 * @param pth 虚拟目录路径
+	 * @param rvpath 虚拟目录路径
 	 */
-	public async list(pth: string): Promise<McafsStats[]> {
-		const vpath = this.resolvePath(pth);
-		const statList = this.vfs.getChildNodeList(vpath).map(child => {
-			const fstats = child instanceof VirtualDirectory
-				? fs.statSync(this.assetsDir)
-				: fs.statSync(this.getRealPathOfHash((child as VirtualFile).hash!));
-			return new McafsStats(fstats, child.name);
-		});
-		return statList;
+	public async list(rvpath: string): Promise<McafsStats[]> {
+		return this.vfs
+			.getChildNodeList(this.resolvePath(rvpath))
+			.map(child => new McafsStats(
+				fs.statSync(child instanceof VirtualDirectory
+					? this.assetsDir
+					: this.getRealPathOfHash((child as VirtualFile).hash!)
+				),
+				child.name,
+			));
 	}
 
 	/**
