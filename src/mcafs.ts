@@ -88,7 +88,6 @@ export class MinecraftAssetsFileSystem {
 	// 索引
 	private indices: Record<string, IndexJson> = {};
 
-	private cannotWrite = true;
 	/**
 	 * @param assetsDir 资产目录
 	 */
