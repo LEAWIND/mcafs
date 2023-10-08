@@ -83,11 +83,6 @@ export class McafsStats implements fs.StatsBase<number> {
 export class MinecraftAssetsFileSystem {
 	// 虚拟文件系统根目录
 	private vfs: VirtualDirectory;
-	// 当前虚拟目录
-	private currentVdir: VirtualDirectory;
-	// 当前虚拟目录路径
-	private currentVpath;
-
 	// 索引
 	private indices: Record<string, IndexJson> = {};
 
@@ -100,8 +95,6 @@ export class MinecraftAssetsFileSystem {
 		}
 
 		this.vfs = new VirtualDirectory(null, "root");
-		this.currentVpath = "/";
-		this.currentVdir = this.vfs;
 
 		/**
 		 * 加载索引文件，生成虚拟文件系统
@@ -136,26 +129,13 @@ export class MinecraftAssetsFileSystem {
 	private getRealPathOfHash(hash: string): string {
 		return path.join(this.objectsRealDir, hash.slice(0, 2), hash);
 	}
-	/**
-	 * 虚拟路径：将相对路径解析为绝对路径
-	 */
-	private resolvePath(rvpath: string): string {
-		if (rvpath[0] === '/') {
-			return rvpath;
-		} else {
-			return path.posix.join(this.currentVpath, rvpath);
-		}
-	}
 
-	public currentDirectory(): string {
-		return this.currentVpath;
-	}
+
 	/**
 	 * 获取文件 Stat
 	 */
-	public async get(rvpath: string): Promise<fs.Stats> {
-		const { base } = path.parse(rvpath);
-		const vpath = this.resolvePath(rvpath);
+	public async get(vpath: string): Promise<fs.Stats> {
+		const { base } = path.parse(vpath);
 		const vfile = this.vfs.get(vpath);
 		let stats: fs.Stats;
 		if (vfile instanceof VirtualFile) {
@@ -170,11 +150,11 @@ export class MinecraftAssetsFileSystem {
 	/**
 	 * 获取目录下的文件信息
 	 * 
-	 * @param rvpath 虚拟目录路径
+	 * @param vpath 虚拟目录路径
 	 */
-	public async list(rvpath: string): Promise<McafsStats[]> {
+	public async list(vpath: string): Promise<McafsStats[]> {
 		return this.vfs
-			.getChildNodeList(this.resolvePath(rvpath))
+			.getChildNodeList(vpath)
 			.map(child => new McafsStats(
 				fs.statSync(child instanceof VirtualDirectory
 					? this.assetsDir
@@ -185,28 +165,12 @@ export class MinecraftAssetsFileSystem {
 	}
 
 	/**
-	 * Returns new directory relative to current directory
-	 * Used in: CWD, CDUP
-	 */
-	public async chdir(rvpath: string = '.'): Promise<string> {
-		const vpath = this.resolvePath(rvpath);
-		const newVDir = this.vfs.get(vpath);
-		if (newVDir instanceof VirtualDirectory) {
-			this.currentVdir = newVDir;
-			return this.currentVpath = vpath;
-		} else {
-			throw new Error(`Not a directory: ${vpath}`);
-		}
-	}
-
-	/**
 	 * Returns a readable stream
 	 * Options:
 	 * start if set, specifies the byte offset to read from
 	 * Used in: RETR
 	 */
-	public async read(rvpath: string, { start }: { start?: number; }): Promise<{ stream: fs.ReadStream; vpath: string; }> {
-		const vpath = this.resolvePath(rvpath);
+	public async read(vpath: string, { start }: { start?: number; }): Promise<{ stream: fs.ReadStream; vpath: string; }> {
 		const vfile = this.vfs.get(vpath);
 		if (vfile instanceof VirtualFile) {
 			// vfile.hash

@@ -1,26 +1,48 @@
 import fs from 'fs';
+import path from 'path';
 
 import { McafsStats, MinecraftAssetsFileSystem } from './mcafs';
 import { FileSystem, FtpConnection } from 'ftp-srv';
 
 export class FrpSrvAdapter extends FileSystem {
+	// 当前虚拟目录路径
+	private currentVpath: string;
+	/**
+	 * 虚拟路径：将相对路径解析为绝对路径
+	 */
+	private resolvePath(rvpath: string): string {
+		if (rvpath[0] === '/') {
+			return rvpath;
+		} else {
+			return path.posix.join(this.currentVpath, rvpath);
+		}
+	}
 	constructor(public connection: FtpConnection, public mcafs: MinecraftAssetsFileSystem) {
 		super(connection, { root: '', cwd: '' });
+		this.currentVpath = "/";
 	}
 	public currentDirectory(): string {
-		return this.mcafs.currentDirectory();
+		return this.currentVpath;
 	}
-	public async get(fileName: string): Promise<fs.Stats> {
-		return this.mcafs.get(fileName);
+	public async get(rvpath: string): Promise<fs.Stats> {
+		const vpath = this.resolvePath(rvpath);
+		return this.mcafs.get(vpath);
 	}
-	public async list(pth: string): Promise<McafsStats[]> {
-		return this.mcafs.list(pth);
+	public async list(rvpath: string): Promise<McafsStats[]> {
+		const vpath = this.resolvePath(rvpath);
+		return this.mcafs.list(vpath);
 	}
-	public async chdir(fname: string = '.'): Promise<string> {
-		return this.mcafs.chdir(fname);
+	public async chdir(rvpath: string = '.'): Promise<string> {
+		const vpath = this.resolvePath(rvpath);
+		if (!(await this.mcafs.get(vpath)).isDirectory()) {
+			throw new Error(`Not a directory: ${vpath}`);
+		}
+		this.currentVpath = vpath;
+		return vpath;
 	}
-	public async read(fileName: string, { start }: { start?: number; }): Promise<any> {
-		return this.mcafs.read(fileName, { start });
+	public async read(rvpath: string, { start }: { start?: number; }): Promise<any> {
+		const vpath = this.resolvePath(rvpath);
+		return this.mcafs.read(vpath, { start });
 	}
 
 	/**
