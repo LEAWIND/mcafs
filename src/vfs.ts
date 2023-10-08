@@ -98,10 +98,11 @@ export class VirtualDirectory extends VirtualNode {
 	 * 
 	 * @param name 子文件名
 	 * @param vfile 虚拟文件
+	 * @param [overwrite=true] 是否允许覆盖旧文件
 	 * 
 	 * @returns 被覆盖的旧文件
 	 */
-	private _makeFile(name: string, vfile: VirtualFile): VirtualFile | null {
+	private _makeFile(name: string, vfile: VirtualFile, overwrite: boolean = true): VirtualFile | null {
 		const member = this._getMember(name);
 		if (member === null) {
 			this.#children[name] = vfile;
@@ -109,6 +110,9 @@ export class VirtualDirectory extends VirtualNode {
 			vfile.name = name;
 			return null;
 		} else if (member instanceof VirtualFile) {
+			if (!overwrite) {
+				throw new Error(`File already exist: ${name}`);
+			}
 			this.#children[name] = vfile;
 			vfile.parent = this;
 			vfile.name = name;
@@ -166,12 +170,15 @@ export class VirtualDirectory extends VirtualNode {
 	 * 递归创建子文件
 	 * 
 	 * 如果文件已经存在，则覆盖，返回被覆盖的旧文件
-	 * TODO overwrite
+	 * 
+	 * @param vpath 虚拟路径
+	 * @param vfile 新文件
+	 * @param [overwrite=true] 是否覆盖旧文件
 	 */
-	makeFile(vpath: string, vfile: VirtualFile): VirtualFile | null {
+	makeFile(vpath: string, vfile: VirtualFile, overwrite: boolean = true): VirtualFile | null {
 		const { dir, base } = path.posix.parse(vpath);
 		const parentDir = dir ? this.makeDir(dir) : this;
-		return parentDir._makeFile(base, vfile);
+		return parentDir._makeFile(base, vfile, overwrite);
 	}
 	/**
 	 * 获取子节点列表
