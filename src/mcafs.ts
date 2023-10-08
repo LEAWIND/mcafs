@@ -121,25 +121,25 @@ export class MinecraftAssetsFileSystem {
 		logger.trace(`Indices are build.`);
 	}
 
-	public get indicesRealDir() {
+	public get indicesRealDir(): string {
 		return path.join(this.assetsDir, 'indexes');
 	}
-	public get objectsRealDir() {
+	public get objectsRealDir(): string {
 		return path.join(this.assetsDir, 'objects');
 	}
-	public get skinsRealDir() {
+	public get skinsRealDir(): string {
 		return path.join(this.assetsDir, 'skins');
 	}
 	/**
 	 * 获取文件hash对应的真实路径
 	 */
-	private getRealPathOfHash(hash: string) {
+	private getRealPathOfHash(hash: string): string {
 		return path.join(this.objectsRealDir, hash.slice(0, 2), hash);
 	}
 	/**
 	 * 虚拟路径：将相对路径解析为绝对路径
 	 */
-	private resolvePath(vpath: string) {
+	private resolvePath(vpath: string): string {
 		if (vpath[0] === '/') {
 			return vpath;
 		} else {
@@ -187,7 +187,7 @@ export class MinecraftAssetsFileSystem {
 	 * Returns new directory relative to current directory
 	 * Used in: CWD, CDUP
 	 */
-	public async chdir(fname: string = '.') {
+	public async chdir(fname: string = '.'): Promise<string> {
 		const vpath = this.resolvePath(fname);
 		const newVDir = this.vfs.get(vpath)!;
 		if (newVDir instanceof VirtualDirectory) {
@@ -204,7 +204,7 @@ export class MinecraftAssetsFileSystem {
 	 * start if set, specifies the byte offset to read from
 	 * Used in: RETR
 	 */
-	public async read(fileName: string, { start }: { start?: number; }) {
+	public async read(fileName: string, { start }: { start?: number; }): Promise<{ stream: fs.ReadStream; vpath: string; }> {
 		const vpath = this.resolvePath(fileName);
 		const vfile = this.vfs.get(vpath)!;
 		if (vfile instanceof VirtualFile) {
@@ -219,7 +219,7 @@ export class MinecraftAssetsFileSystem {
 	/**
 	 * 获取 .assets 目录的默认路径
 	 */
-	public static getDefaultRoot() {
+	public static getDefaultRoot(): string {
 		if (os.type() === 'Windows_NT') {
 			return path.win32.join(process.env.APPDATA!, '.minecraft/assets');
 		} else {

@@ -127,7 +127,7 @@ export class VirtualDirectory extends VirtualNode {
 	/**
 	 * 获取子节点列表
 	 */
-	private _getChildNodeList() {
+	private _getChildNodeList(): VirtualNode[] {
 		return Object.values(this.#children);
 	}
 	/**
@@ -183,7 +183,7 @@ export class VirtualDirectory extends VirtualNode {
 	/**
 	 * 获取子节点列表
 	 */
-	getChildNodeList(vpath: string) {
+	getChildNodeList(vpath: string): VirtualNode[] {
 		const vdir = this.get(vpath)!;
 		if (vdir instanceof VirtualDirectory) {
 			return vdir._getChildNodeList();
@@ -192,7 +192,7 @@ export class VirtualDirectory extends VirtualNode {
 		}
 	}
 
-	toString() {
+	toString(): string {
 		return `VirtualDirectory<${this.getPath()}>`;
 	}
 };

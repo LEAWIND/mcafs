@@ -1,23 +1,25 @@
-import { MinecraftAssetsFileSystem } from './mcafs';
+import fs from 'fs';
+
+import { McafsStats, MinecraftAssetsFileSystem } from './mcafs';
 import { FileSystem, FtpConnection } from 'ftp-srv';
 
 export class FrpSrvAdapter extends FileSystem {
 	constructor(public connection: FtpConnection, public mcafs: MinecraftAssetsFileSystem) {
 		super(connection, { root: '', cwd: '' });
 	}
-	public currentDirectory() {
+	public currentDirectory(): string {
 		return this.mcafs.currentDirectory();
 	}
-	public get(fileName: string) {
+	public async get(fileName: string): Promise<fs.Stats> {
 		return this.mcafs.get(fileName);
 	}
-	public list(pth: string) {
+	public async list(pth: string): Promise<McafsStats[]> {
 		return this.mcafs.list(pth);
 	}
-	public chdir(fname: string = '.') {
+	public async chdir(fname: string = '.'): Promise<string> {
 		return this.mcafs.chdir(fname);
 	}
-	public read(fileName: string, { start }: { start?: number; }) {
+	public async read(fileName: string, { start }: { start?: number; }): Promise<any> {
 		return this.mcafs.read(fileName, { start });
 	}
 
