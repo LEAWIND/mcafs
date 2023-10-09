@@ -3,7 +3,7 @@ import fs from "fs";
 import log4js from "log4js";
 import path from "path";
 
-import { VirtualNode, VirtualDirectory, VirtualFile } from './vfs';
+import { VirtualDirectory, VirtualFile } from './vfs';
 import { IndexdObject, IndexJson } from './assets_types';
 
 const logger = log4js.getLogger("MCAFS");
