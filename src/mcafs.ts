@@ -13,22 +13,22 @@ export class McafsStats implements fs.StatsBase<number> {
 		return this.is_file;
 	}
 	public isDirectory(): boolean {
-		return !this.is_file;
+		return this.is_directory;
 	}
 	public isBlockDevice(): boolean {
-		throw new Error('Method not implemented.');
+		return false;
 	}
 	public isCharacterDevice(): boolean {
-		throw new Error('Method not implemented.');
+		return false;
 	}
 	public isSymbolicLink(): boolean {
 		return false;
 	}
 	public isFIFO(): boolean {
-		throw new Error('Method not implemented.');
+		return false;
 	}
 	public isSocket(): boolean {
-		throw new Error('Method not implemented.');
+		return false;
 	}
 	public dev: number;
 	public ino: number;
@@ -50,6 +50,7 @@ export class McafsStats implements fs.StatsBase<number> {
 	public birthtime: Date;
 
 	private is_file: boolean = false;
+	private is_directory: boolean = false;
 
 	constructor(
 		stats: fs.Stats,
@@ -73,7 +74,9 @@ export class McafsStats implements fs.StatsBase<number> {
 		this.mtime = stats.mtime;
 		this.ctime = stats.ctime;
 		this.birthtime = stats.birthtime;
+
 		this.is_file = stats.isFile();
+		this.is_directory = stats.isDirectory();
 	}
 }
 
