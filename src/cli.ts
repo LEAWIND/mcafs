@@ -13,7 +13,7 @@ const logger = log4js.getLogger("MCAFS");
 program
 	.name("mcafs")
 	.description(`一个用于访问 .minecraft/assets 目录的 FTP 服务器\n任意用户名和密码均可登录`)
-	.version("1.1.0", undefined, "显示版本号")
+	.version("1.1.0", '-v --version', "显示版本号")
 	.helpOption('-h --help', '显示命令帮助')
 	.addHelpText('afterAll', "推荐使用的FTP客户端：FileZilla")
 
