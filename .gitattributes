@@ -1,7 +1,25 @@
 * text=auto
-
 LICENSE text eol=lf
-
 .gitattributes text eol=lf
 .gitignore text eol=lf
-*.ts text eol = lf
+
+*.js text eol=lf
+*.mjs text eol=lf
+*.ts text eol=lf
+*.mcfunction text eol=lf
+
+*.mcmeta text eol=lf
+*.json text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf
+*.cfg text eol=lf
+
+*.md text eol=lf
+*.html text eol=lf
+*.htm text eol=lf
+*.xml text eol=lf
+*.svg text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+
+*.txt text eol=lf

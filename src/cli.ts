@@ -48,7 +48,6 @@ logger.level = opts.logLevel as any;
 
 logger.info(`Minecraft Assets Directory: ${opts.assetsDir}`);
 
-
 const mcafs = new MinecraftAssetsFileSystem(opts.assetsDir);
 
 const ftpServer = new FtpSrv({
