@@ -25,7 +25,7 @@ mcafs -u localhost:2023
 | ---------------------------- | -------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------- |
 | -v --version                 |                            | 显示版本号                                                               |                                                |
 | -h --help                    |                            | 显示命令帮助                                                             |                                                |
-| -d --assertsDir \<assetsDir> | 默认.minecraft/assets 位置 | 自定义 assets 位置                                                       |                                                |
+| -d --assertsDir \<assetsDir> | 默认.minecraft/assets 路径 | 自定义 assets 路径                                                       |                                                |
 | -u --url \<url>              |                            | URL，例如 ftp://0.0.0.0:2023。若指定了此项，则 addr 和 port 选项将被忽略 |                                                |
 | -a --addr \<addr>            | 127.0.0.1                  | IP 地址                                                                  |                                                |
 | -p --port \<port>            | 21                         | FTP 端口号                                                               |                                                |
