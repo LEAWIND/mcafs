@@ -12,16 +12,15 @@ const logger = log4js.getLogger("MCAFS");
 
 program
 	.name("mcafs")
-	.description(`一个用于访问 .minecraft/assets 目录的 FTP 服务器\n任意用户名和密码均可登录`)
-	.version("1.1.0", '-v --version', "显示版本号")
-	.helpOption('-h --help', '显示命令帮助')
-	.addHelpText('afterAll', "推荐使用的FTP客户端：FileZilla")
+	.description(`An FTP server dedicated to accessing the .minecraft/assets directory in Minecraft games, allowing users to easily manage these resource files via an FTP client.`)
+	.version("1.1.0", '-v --version', "Show version number")
+	.helpOption('-h --help', 'Show this help')
 
-	.option('-u --url <url>', 'URL，例如ftp://0.0.0.0:2023。若指定了此项，则addr和port选项将被忽略')
-	.option('-d --assetsDir <assetsDir>', '.minecraft/assets 目录路径', MinecraftAssetsFileSystem.getDefaultRoot())
-	.option('-a --addr <addr>', 'IP 地址', '127.0.0.1')
-	.option('-p --port <port>', 'FTP 端口号', '21')
-	.addOption(new Option('-l --logLevel <logLevel>', '日志级别').choices(['all', 'trace', 'debug', 'info', 'warn', 'error', 'fatal', 'mark', 'off']).default('info'));
+	.option('-u --url <url>', 'URL, e.g., ftp://0.0.0.0:2023. If specified, addr and port options are ignored')
+	.option('-d --assetsDir <assetsDir>', 'Customizes the assets directory location', MinecraftAssetsFileSystem.getDefaultRoot())
+	.option('-a --addr <addr>', 'IP address', 'localhost')
+	.option('-p --port <port>', 'FTP port number', '21')
+	.addOption(new Option('-l --logLevel <logLevel>', 'Log level').choices(['all', 'trace', 'debug', 'info', 'warn', 'error', 'fatal', 'mark', 'off']).default('info'));
 
 program.parse();
 
