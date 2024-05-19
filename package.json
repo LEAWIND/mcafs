@@ -15,11 +15,11 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/LEAWIND/mcafs"
+		"url": "git+https://github.com/LEAWIND/mcafs.git"
 	},
 	"version": "1.1.0",
 	"bin": {
-		"mcafs": "./dist/cli.js"
+		"mcafs": "dist/cli.js"
 	},
 	"scripts": {
 		"dev": "tsc --watch",
