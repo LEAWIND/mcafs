@@ -30,3 +30,13 @@ mcafs -u localhost:2023
 | -a --addr \<addr>            | 127.0.0.1                  | IP 地址                                                                  |                                                |
 | -p --port \<port>            | 21                         | FTP 端口号                                                               |                                                |
 | -l --logLevel \<logLevel>    | info                       | 日志级别                                                                 | all,trace,debug,info,warn,error,fatal,mark,off |
+
+## .minecraft/assets 目录的路径
+
+参考 [.minecraft/path - 中文 Minecraft Wiki](https://zh.minecraft.wiki/w/.minecraft/path)
+
+| 操作系统 | 位置                                             |
+| -------- | ------------------------------------------------ |
+| Windows  | `%APPDATA%\.minecraft\assets`                    |
+| macOS    | `~/Library/Application Support/minecraft/assets` |
+| Linux    | `~/.minecraft/assets`                            |
